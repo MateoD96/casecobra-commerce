@@ -5,7 +5,7 @@ export default function MaxWidthWrapper({
   className,
 }: {
   children: React.ReactNode;
-  className: string;
+  className?: string;
 }) {
   return (
     <div

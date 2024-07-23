@@ -10,7 +10,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 export default function NavBar() {
   const session = useSession();
   const user = session.data?.user;
-  const isAdmin = user?.email === process.env.ADMIN_EMAIL;
+  const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   return (
     <nav
@@ -28,13 +28,6 @@ export default function NavBar() {
                 <Avatar className=" w-10 h-10">
                   <AvatarImage src={user.image!} />
                 </Avatar>
-                <button
-                  onClick={() => signOut()}
-                  className={buttonVariants({ size: "sm", variant: "ghost" })}
-                >
-                  Sign Out
-                </button>
-
                 {isAdmin ? (
                   <Link
                     href={"/dashboard"}
@@ -43,6 +36,13 @@ export default function NavBar() {
                     Dashboard
                   </Link>
                 ) : null}
+
+                <button
+                  onClick={() => signOut()}
+                  className={buttonVariants({ size: "sm", variant: "ghost" })}
+                >
+                  Sign Out
+                </button>
 
                 <Link
                   href={"/configure/upload"}

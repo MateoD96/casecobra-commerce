@@ -61,7 +61,7 @@ const config = {
       keyframes: {
         "fade-in": {
           from: {
-            opacity: "0.5",
+            opacity: "1",
           },
           to: {
             opacity: "1",

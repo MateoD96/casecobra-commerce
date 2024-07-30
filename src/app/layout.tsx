@@ -22,7 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <NavBar />
-          {children}
+          <main className=" flex flex-col min-h-[calc(100vh-3.5rem-1px)]">
+            {children}
+          </main>
           <Footer />
         </SessionProvider>
       </body>

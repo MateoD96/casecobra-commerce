@@ -1,4 +1,4 @@
-import { createUploadthing, type FileRouter } from "uploadthing/next";
+/* import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { z } from "zod";
 import sharp from "sharp";
 import { db } from "@/db";
@@ -29,6 +29,7 @@ export const ourFileRouter = {
           },
         });
         return { configId: configuration.id };
+        
       } else {
         const updateConfiguration = await db.configuration.update({
           where: {
@@ -44,3 +45,4 @@ export const ourFileRouter = {
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
+ */

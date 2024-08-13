@@ -1,8 +1,8 @@
 "use client";
 
+import useUploadCloud from "@/components/hooks/useUploadCloud";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { useUploadThing } from "@/lib/uploadthings";
 import { cn } from "@/lib/utils";
 import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -16,13 +16,12 @@ export default function UploadPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { startUpload, isUploading } = useUploadThing("imageUploader", {
-    onClientUploadComplete: ([data]) => {
-      const configId = data.serverData.configId;
-      startTransition(() => router.push(`/configure/design?id=${configId}`));
+  const { startUpload, isUploading } = useUploadCloud({
+    onUploadCompleted(fileUrl) {
+      startTransition(() => router.push(`/configure/design?id=${fileUrl}`));
     },
-    onUploadProgress(p) {
-      setUploadProgress(p);
+    onUploading(uploadProgress) {
+      setUploadProgress(uploadProgress);
     },
   });
 
@@ -37,8 +36,8 @@ export default function UploadPage() {
   };
 
   const onDropAccepted = (acceptedFiles: File[]) => {
-    startUpload(acceptedFiles, { configId: undefined });
     setIsDragOver(false);
+    startUpload(acceptedFiles);
   };
 
   return (

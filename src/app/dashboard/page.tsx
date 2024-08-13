@@ -1,3 +1,4 @@
+import { db } from "@/db";
 import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
 

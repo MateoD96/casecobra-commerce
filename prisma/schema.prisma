@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Configuration {
+model ImagesConfiguration {
   id              String  @id @default(cuid())
   width           Int
   heigth          Int

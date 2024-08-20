@@ -13,9 +13,7 @@ export const POST = async (request: Request) => {
   const data = await request.formData();
 
   const image = data.get("file") as File;
-
-  if (!image)
-    return NextResponse.json("No se ha subido ninguna image", { status: 400 });
+  const configId = data.get("configId") as string;
 
   const bytes = await image.arrayBuffer();
   const buffer = Buffer.from(bytes);
@@ -31,7 +29,7 @@ export const POST = async (request: Request) => {
 
   const { url, width, height, asset_id }: ImageFile = res as ImageFile;
 
-  if (asset_id) {
+  if (!configId) {
     const res = await db.imagesConfiguration.create({
       data: {
         id: asset_id,
@@ -41,17 +39,15 @@ export const POST = async (request: Request) => {
       },
     });
     return NextResponse.json({ configId: res.id });
-  } /* else {
+  } else {
     const res = await db.imagesConfiguration.update({
       where: {
-        id: asset_id,
+        id: configId,
       },
       data: {
         croppedImageUrl: url,
       },
     });
     return NextResponse.json({ configId: res.id });
-  } */
-
-  return NextResponse.json({ configId: asset_id });
+  }
 };

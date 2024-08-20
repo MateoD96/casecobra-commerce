@@ -8,21 +8,26 @@ interface Props {
 
 const uploadFile = async (
   file: File,
-  onUploadProgress: (uploadProgress: number) => void
+  onUploadProgress?: (uploadProgress: number) => void,
+  configId?: string
 ) => {
   const formData = new FormData();
   formData.append("file", file);
+  configId && formData.append("configId", configId);
 
-  const res = await axios.post("/api/upload", formData, {
-    onUploadProgress(ProgressEvent: ProgressEventInit) {
-      const t = Math.round(
-        (ProgressEvent.loaded! * 100) / ProgressEvent.total!
-      );
-      onUploadProgress(t);
-    },
-  });
-
-  return res.data;
+  try {
+    const res = await axios.post("/api/upload", formData, {
+      onUploadProgress(ProgressEvent: ProgressEventInit) {
+        const t = Math.round(
+          (ProgressEvent.loaded! * 100) / ProgressEvent.total!
+        );
+        onUploadProgress && onUploadProgress(t);
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /////////////////////////////////////////////////
@@ -33,10 +38,10 @@ export default function useUploadCloud({
 }: Props) {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const startUpload = async (files: File[]) => {
+  const startUpload = async (files: File[], configId?: string) => {
     const [file] = files;
     setIsUploading(true);
-    const r = await uploadFile(file, onUploading!);
+    const r = await uploadFile(file, onUploading, configId);
 
     if (r) {
       onUploadCompleted(r.configId);

@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar";
 import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import Providers from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
         <SessionProvider>
           <NavBar />
           <main className=" flex flex-col min-h-[calc(100vh-3.5rem-1px)]">
-            {children}
+            <Providers>{children}</Providers>
           </main>
           <Footer />
         </SessionProvider>

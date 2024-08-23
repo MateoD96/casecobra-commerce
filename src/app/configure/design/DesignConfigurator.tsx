@@ -26,6 +26,9 @@ import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
 import useUploadCloud from "@/components/hooks/useUploadCloud";
 import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { SaveConfigArgs, saveConfig } from "./actions";
+import { useRouter } from "next/navigation";
 
 interface DesignConfiguratorProps {
   configId: string;
@@ -42,6 +45,22 @@ export default function DesignConfigurator({
   dimensions,
 }: DesignConfiguratorProps) {
   const { toast } = useToast();
+  const router = useRouter();
+
+  const { mutate: savedConfig, isPending } = useMutation({
+    mutationKey: ["save-config"],
+    mutationFn: async (args: SaveConfigArgs) => {
+      await Promise.all([saveConfiguration(), saveConfig(args)]);
+    },
+    onError: () => {
+      toast({
+        title: "Something went wrong",
+        description: "There was an error on our end. Please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => router.push(`/configure/preview?id=${configId}`),
+  });
 
   const [options, setOptions] = useState<{
     color: (typeof COLORS)[number];
@@ -113,8 +132,7 @@ export default function DesignConfigurator({
       const base64Data = base64.split(",")[1];
       const blob = base64ToBlob(base64Data, "image/png");
       const file = new File([blob], "filename.png", { type: "image/png" });
-
-      const res = await startUpload([file], configId);
+      await startUpload([file], configId);
     } catch (error) {
       toast({
         title: "Something went wrong",
@@ -383,9 +401,17 @@ export default function DesignConfigurator({
                 )}
               </p>
               <Button
-                onClick={() => saveConfiguration()}
+                onClick={() =>
+                  savedConfig({
+                    color: options.color.value,
+                    model: options.model.value,
+                    finish: options.finish.value,
+                    material: options.material.value,
+                    configId: configId,
+                  })
+                }
                 size="sm"
-                className="w-full"
+                className={cn("w-full", { "cursor-not-allowed": isPending })}
               >
                 Continue
                 <ArrowRight className="h-4 w-4 ml-1.5 inline" />

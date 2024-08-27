@@ -401,6 +401,8 @@ export default function DesignConfigurator({
                 )}
               </p>
               <Button
+                isLoading={isPending}
+                loadingText={isPending ? "loading" : ""}
                 onClick={() =>
                   savedConfig({
                     color: options.color.value,

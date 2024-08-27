@@ -27,14 +27,14 @@ export default function Phone({
         src={
           dark
             ? "/phone-template-dark-edges.png"
-            : "phone-template-white-edges.png"
+            : "/phone-template-white-edges.png"
         }
         alt="Phone Image"
         className=" pointer-events-none z-50 select-none"
       />
       <div className=" absolute -z-10 inset-0">
         <img
-          className=" object-cover"
+          className=" object-cover min-w-full min-h-full"
           src={imgSrc}
           alt="overlaying phone image"
         />

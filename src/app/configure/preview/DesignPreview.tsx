@@ -6,6 +6,7 @@ import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { ImagesConfiguration } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
@@ -28,6 +29,12 @@ export default function DesignPreview({
   let priceMaterial =
     material === "polycarbonate" ? PRODUCT_PRICES.material.polycarbonate : 0;
   let totalPrice = BASE_PRICE + priceFinish + priceMaterial;
+
+  const {} = useMutation({
+    mutationKey: ["get-checkout-session"],
+    mutationFn: async (args) => console.log(""),
+    onSuccess: () => {},
+  });
 
   return (
     <>

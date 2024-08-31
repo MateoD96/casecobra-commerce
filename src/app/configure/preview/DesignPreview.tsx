@@ -10,6 +10,11 @@ import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
+import { createCheckoutSession } from "./actions";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
+import LoginModal from "@/components/LoginModal";
 
 export default function DesignPreview({
   imageConfig,
@@ -17,9 +22,20 @@ export default function DesignPreview({
   imageConfig: ImagesConfiguration;
 }) {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   useEffect(() => setShowConfetti(true), []);
 
-  const { croppedImageUrl, color, material, finish, model } = imageConfig;
+  const router = useRouter();
+  const session = useSession();
+  const {
+    id: idConfig,
+    croppedImageUrl,
+    color,
+    material,
+    finish,
+    model,
+  } = imageConfig;
+
   const twColor = COLORS.find((c) => c.value === color)?.tw;
   const { label: modelLabel } = MODELS.options.find(
     ({ value }) => value === model
@@ -30,11 +46,29 @@ export default function DesignPreview({
     material === "polycarbonate" ? PRODUCT_PRICES.material.polycarbonate : 0;
   let totalPrice = BASE_PRICE + priceFinish + priceMaterial;
 
-  const {} = useMutation({
+  const { mutate: createCheckout, isPending } = useMutation({
     mutationKey: ["get-checkout-session"],
-    mutationFn: async (args) => console.log(""),
+    mutationFn: async (args: string) =>
+      await createCheckoutSession({ configId: args }),
     onSuccess: () => {},
+    onError: ({ message }) => {
+      if (message.includes("need to be logged")) {
+        return router.push(`${process.env.NEXT_PUBLIC_URL}/api/auth/signin`);
+      }
+      toast({
+        title: message,
+        variant: "destructive",
+      });
+    },
   });
+
+  const handleCheckout = () => {
+    if (session.data?.user) {
+      createCheckout(idConfig);
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -48,6 +82,8 @@ export default function DesignPreview({
           config={{ elementCount: 200, spread: 90 }}
         />
       </div>
+
+      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
 
       <div
         className=" mt-20 grid grid-cols-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6
@@ -131,7 +167,13 @@ export default function DesignPreview({
             </div>
 
             <div className=" mt-8 flex justify-end pb-12">
-              <Button className="px-4 sm:px-6 lg:px-8">
+              <Button
+                loadingText={isPending ? "loading" : ""}
+                disabled={isPending}
+                isLoading={isPending}
+                onClick={handleCheckout}
+                className="px-4 sm:px-6 lg:px-8"
+              >
                 Check out <ArrowRight className=" h-4 w-4 ml-1.5 inline" />
               </Button>
             </div>

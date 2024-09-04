@@ -16,22 +16,35 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json({ error: "Payment failed" }, { status: 400 });
     }
 
+    const { order_id, user_mail } = payment.metadata || {
+      order_id: null,
+      user_mail: null,
+    };
+
+    if (!order_id || !user_mail) {
+      throw new Error("Invalid request metadata");
+    }
+
     if (
       payment.status_detail === "accredited" &&
       payment.status === "approved"
     ) {
-      const { order_id, user_mail } = payment.metadata || {
-        order_id: null,
-        user_mail: null,
-      };
-
-      if (!order_id || !user_mail) {
-        throw new Error("Invalid request metadata");
-      }
+      await db.order.update({
+        where: {
+          id: order_id,
+        },
+        data: {
+          isPaid: true,
+        },
+      });
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error);
+    console.error(error);
+    return NextResponse.json(
+      { message: "Something went wrong", ok: false },
+      { status: 500 }
+    );
   }
 };

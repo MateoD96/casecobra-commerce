@@ -92,7 +92,6 @@ export const createCheckoutSession = async ({
         userId: session.user.id,
         userMail: session.user.email,
         orderId: order.id,
-        shippingAddressId: order.shippingAddressId,
       },
     },
   });

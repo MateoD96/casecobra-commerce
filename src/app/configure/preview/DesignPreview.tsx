@@ -46,27 +46,12 @@ export default function DesignPreview({
     material === "polycarbonate" ? PRODUCT_PRICES.material.polycarbonate : 0;
   let totalPrice = BASE_PRICE + priceFinish + priceMaterial;
 
-  const { mutate: createCheckout, isPending } = useMutation({
-    mutationKey: ["get-checkout-session"],
-    mutationFn: async (args: string) =>
-      await createCheckoutSession({ configId: args }),
-    onSuccess: () => {},
-    onError: ({ message }) => {
-      if (message.includes("need to be logged")) {
-        return router.push(`${process.env.NEXT_PUBLIC_URL}/api/auth/signin`);
-      }
-      toast({
-        title: message,
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleCheckout = () => {
-    if (session.data?.user) {
-      createCheckout(idConfig);
-    } else {
+    if (!session.data?.user) {
       setIsLoginModalOpen(true);
+    } else {
+      localStorage.setItem("configId", idConfig);
+      router.push("/check/shipping-address");
     }
   };
 
@@ -167,13 +152,16 @@ export default function DesignPreview({
             </div>
 
             <div className=" mt-8 flex justify-end pb-12">
-              <Button
+              {/*       <Button
                 loadingText={isPending ? "loading" : ""}
                 disabled={isPending}
                 isLoading={isPending}
                 onClick={handleCheckout}
                 className="px-4 sm:px-6 lg:px-8"
               >
+                Check out <ArrowRight className=" h-4 w-4 ml-1.5 inline" />
+              </Button> */}
+              <Button className="px-4 sm:px-6 lg:px-8" onClick={handleCheckout}>
                 Check out <ArrowRight className=" h-4 w-4 ml-1.5 inline" />
               </Button>
             </div>

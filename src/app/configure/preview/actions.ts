@@ -9,8 +9,10 @@ import { redirect } from "next/navigation";
 
 export const createCheckoutSession = async ({
   configId,
+  shippingAddressId,
 }: {
   configId: string;
+  shippingAddressId: string;
 }) => {
   const session = await auth();
 
@@ -24,8 +26,18 @@ export const createCheckoutSession = async ({
     },
   });
 
+  const dataShippingUser = await db.shippingAddress.findUnique({
+    where: {
+      id: shippingAddressId,
+    },
+  });
+
   if (!configuration) {
     throw new Error("No such configuration found");
+  }
+
+  if (!dataShippingUser) {
+    throw new Error("No such shipping address found");
   }
 
   const { finish, material } = configuration;
@@ -39,8 +51,9 @@ export const createCheckoutSession = async ({
 
   const exitingOrder = await db.order.findFirst({
     where: {
-      userId: session.user.id!,
+      userId: session.user.email!,
       configurationId: configuration.id,
+      shippingAddressId: dataShippingUser?.id,
     },
   });
 
@@ -49,8 +62,9 @@ export const createCheckoutSession = async ({
       data: {
         amount: price / 100,
         orderStatus: "awaiting_shipment",
-        userId: session.user.id!,
+        userId: session.user.email!,
         configurationId: configuration.id,
+        shippingAddressId: dataShippingUser?.id,
       },
     });
   } else {
@@ -70,7 +84,7 @@ export const createCheckoutSession = async ({
         },
       ],
       back_urls: {
-        failure: "",
+        failure: `${process.env.NEXT_PUBLIC_URL}/`,
         success: `${process.env.NEXT_PUBLIC_URL}/thank-you?orderId=${order.id}`,
       },
       auto_return: "approved",
@@ -78,6 +92,7 @@ export const createCheckoutSession = async ({
         userId: session.user.id,
         userMail: session.user.email,
         orderId: order.id,
+        shippingAddressId: order.shippingAddressId,
       },
     },
   });

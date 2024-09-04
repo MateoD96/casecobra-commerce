@@ -57,8 +57,8 @@ model ImagesConfiguration {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String
+  id        String   @default(cuid())
+  email     String   @id
   Order     Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,7 +68,7 @@ model Order {
   id                String              @id @default(cuid())
   configurationId   String
   configuration     ImagesConfiguration @relation(fields: [configurationId], references: [id])
-  user              User                @relation(fields: [userId], references: [id])
+  user              User                @relation(fields: [userId], references: [email])
   userId            String
   amount            Float
   isPaid            Boolean             @default(false)
@@ -84,6 +84,7 @@ model Order {
 model ShippingAddress {
   id          String  @id @default(cuid())
   name        String
+  email       String?
   street      String
   city        String
   postalCode  String

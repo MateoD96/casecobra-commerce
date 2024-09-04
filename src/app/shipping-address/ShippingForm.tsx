@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@headlessui/react";
 import shippingAddressSchema from "@/app/validations/address-shipping";
 import { useMutation } from "@tanstack/react-query";
-import { registerShippingAddress } from "../check/actions";
 import { ShippingAddress } from "@prisma/client";
 import { createCheckoutSession } from "@/app/configure/preview/actions";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
+import { registerShippingAddress } from "./actions";
 
 export default function ShippingForm({ configId }: { configId: string }) {
   const form = useForm<z.infer<typeof shippingAddressSchema>>({

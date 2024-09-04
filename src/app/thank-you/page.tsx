@@ -6,12 +6,12 @@ interface Params {
   };
 }
 
-export default function ThankYouPage({ searchParams }: Params) {
+export default async function ThankYouPage({ searchParams }: Params) {
   const { orderId } = searchParams;
 
   if (typeof orderId !== "string" || !orderId) {
     return notFound();
   }
 
-  return <div>Thank You Page</div>;
+  return <div>Order: {orderId}</div>;
 }

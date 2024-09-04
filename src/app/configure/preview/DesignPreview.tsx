@@ -152,15 +152,6 @@ export default function DesignPreview({
             </div>
 
             <div className=" mt-8 flex justify-end pb-12">
-              {/*       <Button
-                loadingText={isPending ? "loading" : ""}
-                disabled={isPending}
-                isLoading={isPending}
-                onClick={handleCheckout}
-                className="px-4 sm:px-6 lg:px-8"
-              >
-                Check out <ArrowRight className=" h-4 w-4 ml-1.5 inline" />
-              </Button> */}
               <Button className="px-4 sm:px-6 lg:px-8" onClick={handleCheckout}>
                 Check out <ArrowRight className=" h-4 w-4 ml-1.5 inline" />
               </Button>

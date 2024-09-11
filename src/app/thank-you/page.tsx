@@ -1,17 +1,10 @@
-import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import ThankYou from "./ThankYou";
 
-interface Params {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
-}
-
-export default async function ThankYouPage({ searchParams }: Params) {
-  const { orderId } = searchParams;
-
-  if (typeof orderId !== "string" || !orderId) {
-    return notFound();
-  }
-
-  return <div>Order: {orderId}</div>;
+export default function ThankYouPage() {
+  return (
+    <Suspense>
+      <ThankYou />
+    </Suspense>
+  );
 }

@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/auth";
 import { ShippingAddress } from "@prisma/client";
 import shippingAddressSchema from "../validations/address-shipping";

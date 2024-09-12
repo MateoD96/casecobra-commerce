@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/auth";
 import { ShippingAddress } from "@prisma/client";
 import shippingAddressSchema from "../validations/address-shipping";
@@ -12,6 +14,8 @@ export async function registerShippingAddress(values: ShippingAddress) {
   }
 
   const dat = shippingAddressSchema.parse(values);
+
+  console.log(dat);
 
   const idShippingAddres = await db.shippingAddress.create({
     data: {

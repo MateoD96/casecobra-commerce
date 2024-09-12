@@ -12,6 +12,7 @@ export default function useResizeObserver(): [
   useEffect(() => {
     if (!refElem.current) return;
 
+    // observa el elemento (el evento resize observa el tamaño de ventana)
     const resizeObserver = new ResizeObserver(() => {
       setHeightElem(refElem.current?.offsetHeight ?? 0);
       setWidthElem(refElem.current?.offsetWidth ?? 0);

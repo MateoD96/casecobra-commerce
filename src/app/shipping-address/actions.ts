@@ -15,8 +15,6 @@ export async function registerShippingAddress(values: ShippingAddress) {
 
   const dat = shippingAddressSchema.parse(values);
 
-  console.log(dat);
-
   const idShippingAddres = await db.shippingAddress.create({
     data: {
       name: dat.name,

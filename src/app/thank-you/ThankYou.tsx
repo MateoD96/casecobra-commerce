@@ -42,7 +42,7 @@ export default function ThankYou() {
     );
   }
 
-  const { configuration, user, amount, ShippingAddress } = order;
+  const { configuration, amount, ShippingAddress } = order;
   const { color, croppedImageUrl } = configuration;
 
   return (

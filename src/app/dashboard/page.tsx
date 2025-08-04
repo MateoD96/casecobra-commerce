@@ -21,6 +21,12 @@ import { formatPrice } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import StatusDropdown from "./StatusDropdown";
 
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Dashboard",
+};
+
 export default async function AdminDashboardPage() {
   const session = await getSession();
   const admin = process.env.ADMIN_EMAIL;
